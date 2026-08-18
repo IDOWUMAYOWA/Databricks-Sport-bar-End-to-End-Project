@@ -4,7 +4,7 @@
 This data pipeline integrates a newly acquired sports nutrition company ("Sports Bar") into a parent sports retailer's existing Databricks lakehouse. The acquired company's operational data arrives as raw CSV extracts in Amazon S3 with inconsistent formats, typos, and a data model that does not match the parent's. The pipeline lands that data in a medallion architecture, standardises it against the parent's schema, and merges it into the parent's existing star schema so both entities can be reported on as a single business. The end result feeds a Databricks Lakeview dashboard for unified sales analytics.
 
 ## Architecture
-![Architecture](docs/images/architecture.png)
+![Architecture](docs/images/sport.png)
 
 ## Data Flow
 1. **Data Extraction:** Raw CSV files for customers, products, gross prices, and orders land in an S3 bucket. Notebooks read them with file metadata captured at ingestion.
@@ -40,7 +40,7 @@ The parent company's star schema is the integration target. Child data is confor
 
 `sb_dim_customers`, `sb_dim_products`, `sb_dim_gross_price`, `sb_fact_orders` — the acquired company's data in gold shape before it is merged upward.
 
-![Data Model](docs/images/data-model.png)
+![Data Model](docs/images/datamodel.png)
 
 ## ETL Pipeline
 The pipeline consists of the following key tasks:
@@ -422,7 +422,8 @@ The Databricks Lakeview dashboard reports on the merged parent and child data, f
 
 Because every acquired customer carries `channel = "Acquisition"`, the channel breakdown doubles as a view of how much revenue the acquisition contributes against the parent's existing retail and direct channels.
 
-![Sales Dashboard](docs/images/dashboard-sales.png)
+![Sales Insights](docs/images/dashboard-sales-1.png)
+![Trends and Customers](docs/images/dashboard-sales-2.png)
 
 ## Design Notes
 - **Deterministic product codes.** Hashing the product name with SHA-256 rather than generating a surrogate key means re-running the pipeline produces identical codes, so the merge into `dim_products` updates in place instead of inserting duplicates.
